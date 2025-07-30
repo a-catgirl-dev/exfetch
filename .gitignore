@@ -1,5 +1,4 @@
 debug/
 target/
 **/*.rs.bk
-.gitpod.yml
-.vscode
+*.pdb
