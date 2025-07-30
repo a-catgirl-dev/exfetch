@@ -1,16 +1,16 @@
 [package]
 name = "exfetch"
 version = "0.11.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-tokio = { version = "1.38", features = ["macros", "rt-multi-thread", "fs", "io-std", "io-util"] }
+tokio = { version = "1.47.0", features = ["macros", "rt-multi-thread", "fs", "io-std", "io-util"] }
 
 [target.'cfg(windows)'.dependencies]
-winreg = "0.52"
+winreg = "0.55"
 
 [target.'cfg(unix)'.dependencies]
-sysinfo_dot_h = "0.1.0"
+sysinfo_dot_h = "0.2.1"
 
 [profile.release]
 opt-level = 'z'
