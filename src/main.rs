@@ -11,6 +11,23 @@ mod unix;
 // putting into typedef because otherwise clippy would complain. heh
 type FunctionRegistry<'a> = (Option<fn() -> String>, Option<fn() -> Option<String>>, &'a str);
 
+// the ordering in which these are laid out determine where they will show when it gets
+// printed.
+const HARDWARE_REGISTRY: [FunctionRegistry; 4] = [
+    (None, Some(readout::cpu),"CPU"),
+    (Some(readout::memory), None, "Mem"),
+    (Some(readout::arch), None, "Arch"),
+    (Some(readout::uptime), None, "Up"),
+];
+
+const SOFTWARE_REGISTRY: [FunctionRegistry; 5] = [
+    (None, Some(readout::shell), "sh"),
+    (Some(readout::pkg), None, "PKGs"),
+    (None, Some(readout::os_ver), "OS"),
+    (Some(readout::init), None, "Init"),
+    (Some(readout::swap), None, "Swap"),
+];
+
 fn get_max_value_of_vec(vec: &[usize]) -> usize {
     vec.iter().max().map_or_else(|| panic!("the entire vector is empty, wtf?"), |max| *max)
 }
@@ -53,33 +70,18 @@ fn print(text: &str, icon: &str, long: usize) {
 }
 
 fn main() {
-    // the ordering in which these are laid out determine where they will show when it gets
-    // printed.
-    let hardware_registry: [FunctionRegistry; 4] = [
-        (None, Some(readout::cpu),"CPU"),
-        (Some(readout::memory), None, "Mem"),
-        (Some(readout::arch), None, "Arch"),
-        (Some(readout::uptime), None, "Up"),
-    ];
-
-    let software_registry: [FunctionRegistry; 5] = [
-        (None, Some(readout::shell), "sh"),
-        (Some(readout::pkg), None, "PKGs"),
-        (None, Some(readout::os_ver), "OS"),
-        (Some(readout::init), None, "Init"),
-        (Some(readout::swap), None, "Swap"),
-    ];
-
-    // store results because we need to calculate lengths
+    // cache results (calculate lengths first BEFORE printing)
+    // im pretty sure this is the best data structure for this. idk, i didnt read my share of "data
+    // structures and algorithms"
     let mut hardware_registry_cache: Vec<(String, &str)> = Vec::new();
     let mut software_registry_cache: Vec<(String, &str)> = Vec::new();
     // for box calculation later (find longest string)
     let mut lengths: Vec<usize> = Vec::new();
 
-    for (func_one, func_two, icon) in &hardware_registry {
+    for (func_one, func_two, icon) in &HARDWARE_REGISTRY {
         iterate(&mut hardware_registry_cache, &mut lengths, *func_one, *func_two, icon);
     }
-    for (func_one, func_two, icon) in &software_registry {
+    for (func_one, func_two, icon) in &SOFTWARE_REGISTRY {
         iterate(&mut software_registry_cache, &mut lengths, *func_one, *func_two, icon);
     }
 
