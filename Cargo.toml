@@ -3,13 +3,10 @@ name = "exfetch"
 version = "0.11.0"
 edition = "2024"
 
-[dependencies]
-tokio = { version = "1.47.0", features = ["macros", "rt-multi-thread", "fs", "io-std", "io-util"] }
+[target.'cfg(target_os = "linux")'.dependencies]
+sysinfo_dot_h = "0.2.1"
 
-[target.'cfg(windows)'.dependencies]
-winreg = "0.55"
-
-[target.'cfg(unix)'.dependencies]
+[target.'cfg(android)'.dependencies]
 sysinfo_dot_h = "0.2.1"
 
 [profile.release]
